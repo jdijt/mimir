@@ -1,5 +1,6 @@
 package eu.derfniw.resources
 
+import eu.derfniw.Config
 import eu.derfniw.resources.jsonschema.PublicConfig
 import eu.derfniw.resources.jsonschema.UIMode
 import eu.derfniw.resources.jsonschema.UserConfig
@@ -13,16 +14,16 @@ import org.jboss.resteasy.reactive.NoCache
 
 @Path("/config")
 @Produces(MediaType.APPLICATION_JSON)
-@Authenticated
 @NoCache
-class ConfigResource {
+class ConfigResource(val config: Config) {
 
     @GET
     @Path("/public")
     @PermitAll
-    fun getPublicConfig(): PublicConfig = PublicConfig("DEV!")
+    fun getPublicConfig(): PublicConfig = PublicConfig(config.name())
 
     @GET
     @Path("/user")
+    @Authenticated
     fun getUserConfig(): UserConfig = UserConfig(UIMode.SYSTEM)
 }

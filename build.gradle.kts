@@ -32,6 +32,11 @@ dependencies {
     implementation("io.quarkus:quarkus-arc")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
+
+    //Workaround for Quarkus issue: Compiler plugins not passed when live reloading.
+    // Adds them to the classpath for this.
+    quarkusDev("org.jetbrains.kotlin:kotlin-allopen-compiler-plugin:2.0.0")
+    quarkusDev("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin:2.0.0")
 }
 
 group = "eu.derfniw"
@@ -56,5 +61,24 @@ kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
         javaParameters = true
+    }
+}
+
+// Workaround for various issues in Quarkus around the live reload of kotlin code.
+// Specifically: compiler plugins not being applied.
+// Manually applies them.
+// See: https://github.com/quarkusio/quarkus/issues/37109
+tasks.quarkusDev {
+    compilerOptions {
+        compiler("kotlin").args(
+            listOf(
+                "-Xplugin=${configurations.quarkusDev.get().files.find { "kotlin-allopen-compiler-plugin" in it.name }}",
+                "-Xplugin=${configurations.quarkusDev.get().files.find { "kotlin-serialization-compiler-plugin" in it.name }}",
+                "-P=plugin:org.jetbrains.kotlin.allopen:annotation=jakarta.ws.rs.Path",
+                "-P=plugin:org.jetbrains.kotlin.allopen:annotation=jakarta.enterprise.context.ApplicationScoped",
+                "-P=plugin:org.jetbrains.kotlin.allopen:annotation=jakarta.persistence.Entity",
+                "-P=plugin:org.jetbrains.kotlin.allopen:annotation=io.quarkus.test.junit.QuarkusTest",
+            )
+        )
     }
 }

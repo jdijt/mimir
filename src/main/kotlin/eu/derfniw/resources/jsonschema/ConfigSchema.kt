@@ -16,5 +16,5 @@ data class UserConfig(
 enum class UIMode {
     LIGHT,
     DARK,
-    SYSTEM
+    SYSTEM,
 }
