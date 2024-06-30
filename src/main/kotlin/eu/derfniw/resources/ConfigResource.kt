@@ -20,10 +20,15 @@ class ConfigResource(val config: Config) {
     @GET
     @Path("/public")
     @PermitAll
-    fun getPublicConfig(): PublicConfig = PublicConfig(config.name())
+    fun getPublicConfig(): PublicConfig = PublicConfig(
+        config.name(),
+        config.frontendConfig().oidcClientId(),
+        config.frontendConfig().oidcAuthServerUrl().toString()
+    )
 
     @GET
     @Path("/user")
     @Authenticated
     fun getUserConfig(): UserConfig = UserConfig(UIMode.SYSTEM)
+
 }

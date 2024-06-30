@@ -31,6 +31,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.quarkus:quarkus-arc")
     testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.quarkus:quarkus-test-security-oidc")
     testImplementation("io.rest-assured:rest-assured")
 
     //Workaround for Quarkus issue: Compiler plugins not passed when live reloading.

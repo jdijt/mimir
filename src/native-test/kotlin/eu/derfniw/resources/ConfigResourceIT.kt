@@ -1,6 +1,6 @@
-package eu.derfniw
+package eu.derfniw.resources
 
 import io.quarkus.test.junit.QuarkusIntegrationTest
 
 @QuarkusIntegrationTest
-class GreetingResourceIT : GreetingResourceTest()
+class ConfigResourceIT : ConfigResourceTest()
