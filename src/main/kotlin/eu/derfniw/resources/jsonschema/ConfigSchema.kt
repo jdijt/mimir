@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class PublicConfig(
     val instanceName: String,
     val oidcClientId: String,
-    val oidcAuthServerUrl: String
+    val oidcAuthServerUrl: String,
+    val appProfile: AppProfile
 )
 
 @Serializable
@@ -19,4 +20,9 @@ enum class UIMode {
     LIGHT,
     DARK,
     SYSTEM,
+}
+
+@Serializable
+enum class AppProfile {
+    PROD, DEV
 }

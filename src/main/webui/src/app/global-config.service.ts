@@ -26,10 +26,11 @@ export class GlobalConfigService {
       redirectUri: window.location.origin,
       responseType: "code",
       scope: "openid profile email offline_access",
-      showDebugInformation: true
+      showDebugInformation: this.publicConfig.appProfile === "DEV"
     }
     this.oauthService.configure(oauthConfig)
     this.oauthService.setupAutomaticSilentRefresh()
+    await this.oauthService.loadDiscoveryDocument()
   }
 
   public getInstanceName(): string {

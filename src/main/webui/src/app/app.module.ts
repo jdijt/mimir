@@ -19,19 +19,13 @@ import {GlobalConfigService} from "./global-config.service";
   ],
   providers: [
     provideHttpClient(withFetch()),
-    provideOAuthClient({
-      resourceServer: {
-        sendAccessToken: true,
-        //TODO: Check if this is a secure way of going about it?
-        allowedUrls: [`http://localhost:8080/api/*`]
-      }
-    }),
+    provideOAuthClient(),
     GlobalConfigService,
     {
       provide: APP_INITIALIZER,
       useFactory: (cfg: GlobalConfigService, auth: OAuthService) => async () => {
         await cfg.init()
-        return auth.loadDiscoveryDocumentAndLogin()
+        await auth.loadDiscoveryDocumentAndLogin()
       },
       deps: [GlobalConfigService, OAuthService],
       multi: true
