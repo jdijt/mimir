@@ -11,7 +11,7 @@ val dependencies = new {
     val http4s     = "0.23.27"
     val http4sDom  = "0.2.11"
     val laminar    = "16.0.0"
-    val log4cats   = "2.7.0"
+    val scribe     = "3.14.0"
     val pureConfig = "0.17.7"
   }
 
@@ -40,13 +40,14 @@ val dependencies = new {
 
   val server = Def.settings(
     libraryDependencies ++= Seq(
+      "com.github.pureconfig" %% "pureconfig-core"     % versions.pureConfig,
+      "com.outr"              %% "scribe-cats"         % versions.scribe,
+      "com.outr"              %% "scribe-slf4j"        % versions.scribe,
       "org.http4s"            %% "http4s-ember-server" % versions.http4s,
       "org.http4s"            %% "http4s-dsl"          % versions.http4s,
       "org.http4s"            %% "http4s-circe"        % versions.http4s,
       "org.typelevel"         %% "cats-effect"         % versions.catsEffect,
-      "org.typelevel"         %% "cats-core"           % versions.cats,
-      "org.typelevel"         %% "log4cats-slf4j"      % versions.log4cats,
-      "com.github.pureconfig" %% "pureconfig-core"     % versions.pureConfig
+      "org.typelevel"         %% "cats-core"           % versions.cats
     )
   )
 }
@@ -80,9 +81,7 @@ lazy val server = project
     Assets / WebKeys.packagePrefix := "public/",
     Runtime / managedClasspath += (Assets / packageBin).value,
     Compile / compile := (Compile / compile).dependsOn(scalaJSPipeline).value,
-    Compile / run / fork := true,
-    Compile / run / javaOptions += "-Dservice.mode=development"
   )
 
-addCommandAlias("runDev", ";server/reStart")
+addCommandAlias("runDev", ";server/reStart --- -Dservice.mode=dev")
 addCommandAlias("stopDev", ";server/reStop")

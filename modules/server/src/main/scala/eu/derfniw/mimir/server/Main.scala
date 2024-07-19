@@ -6,7 +6,6 @@ import fs2.io.net.Network
 import org.http4s.HttpApp
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import org.typelevel.log4cats.Logger
 
 object Main extends IOApp.Simple:
   
