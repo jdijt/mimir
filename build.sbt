@@ -11,6 +11,7 @@ val dependencies = new {
     val http4s     = "0.23.27"
     val http4sDom  = "0.2.11"
     val laminar    = "16.0.0"
+    val log4cats   = "2.7.0"
     val pureConfig = "0.17.7"
   }
 
@@ -44,12 +45,13 @@ val dependencies = new {
       "org.http4s"            %% "http4s-circe"        % versions.http4s,
       "org.typelevel"         %% "cats-effect"         % versions.catsEffect,
       "org.typelevel"         %% "cats-core"           % versions.cats,
+      "org.typelevel"         %% "log4cats-slf4j"      % versions.log4cats,
       "com.github.pureconfig" %% "pureconfig-core"     % versions.pureConfig
     )
   )
 }
 
-lazy val root = project
+lazy val mimir = project
   .in(file("."))
   .aggregate(shared.js, shared.jvm, client, server)
 
@@ -79,7 +81,7 @@ lazy val server = project
     Runtime / managedClasspath += (Assets / packageBin).value,
     Compile / compile := (Compile / compile).dependsOn(scalaJSPipeline).value,
     Compile / run / fork := true,
-    Compile / run / javaOptions += "-Dmode=development"
+    Compile / run / javaOptions += "-Dservice.mode=development"
   )
 
 addCommandAlias("runDev", ";server/reStart")

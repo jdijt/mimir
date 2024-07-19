@@ -16,7 +16,7 @@ class StaticResourcesService[F[_]: Async](config: ServiceConfig) extends Http4sD
   private val rewrites = HttpRoutes.of[F] {
     case req @ GET -> Root => baseRoutes.apply(req.withUri(req.uri / "index.html")).getOrElseF(NotFound())
     case req @ GET -> "client" /: path =>
-      if config.mode == AppMode.Development then
+      if config.mode == AppMode.Dev then
         baseRoutes.apply(req.withUri(req.uri / "client-fastopt" / path.renderString)).getOrElseF(NotFound())
       else
         baseRoutes.apply(req.withUri(req.uri / "client-fullopt" / path.renderString)).getOrElseF(NotFound())

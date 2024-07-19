@@ -1,27 +1,37 @@
 package eu.derfniw.mimir.server
 
-import cats.effect.{IO, IOApp, Resource}
-import com.comcast.ip4s.{Ipv4Address, Port, ipv4, port}
+import cats.effect.{IO, IOApp}
 import eu.derfniw.mimir.server.resources.StaticResourcesService
 import fs2.io.net.Network
+import org.http4s.HttpApp
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
+import org.typelevel.log4cats.Logger
 
 object Main extends IOApp.Simple:
+  
+  private def config = Config[IO]()
 
-  private val server = for
-    config <- Config.serviceConfig[IO]
-    _ <- Resource.Pure(IO.println(s"Starting server in ${config.mode} mode"))
-    httpApp = Router
-      .define()(StaticResourcesService[IO](config).routes)
+  private def routes(config: ServiceConfig) =
+    Router
+      .define( /*todo: api routes */ )(
+        StaticResourcesService[IO](config).routes
+      )
       .orNotFound
-    server <- EmberServerBuilder
-      .default[IO]
-      .withHost(Ipv4Address.fromString(config.host).getOrElse(ipv4"0.0.0.0"))
-      .withPort(Port.fromInt(config.port).getOrElse(port"8080"))
-      .withHttpApp(httpApp)
-      .build
-  yield server
 
-  def run: IO[Unit] = server.useForever
+  private def server(config: ServiceConfig, app: HttpApp[IO]) =
+    EmberServerBuilder
+      .default[IO]
+      .withHost(config.host)
+      .withPort(config.port)
+      .withHttpApp(app)
+      .build
+
+  def run: IO[Unit] =
+    val serverResource = for
+      cfg <- config
+      app = routes(cfg.service)
+      srv <- server(cfg.service, app)
+    yield srv
+    serverResource.useForever
 end Main
