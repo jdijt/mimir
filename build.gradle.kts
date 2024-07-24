@@ -40,7 +40,7 @@ dependencies {
     quarkusDev("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin:2.0.0")
 }
 
-group = "eu.derfniw"
+group = "eu.derfniw.mimir"
 version = "1.0.0-SNAPSHOT"
 
 java {
@@ -51,6 +51,7 @@ java {
 tasks.withType<Test> {
     systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
 }
+
 allOpen {
     annotation("jakarta.ws.rs.Path")
     annotation("jakarta.enterprise.context.ApplicationScoped")
